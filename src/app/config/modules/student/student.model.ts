@@ -14,7 +14,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     },
     id: {
       type: String,
-      required: true,
+      unique: true,
     },
     firstName: {
       type: String,
@@ -43,9 +43,13 @@ const studentSchema = new Schema<TStudent, StudentModel>(
 
 // virtual
 studentSchema.virtual("fullName").get(function () {
-  return this.firstName + this.lastName;
+  return this.firstName + " " + this.lastName;
 });
-
+studentSchema.pre(`save`, async function (next) {
+  const year = new Date().getFullYear();
+  const serial = (await Student.find())?.length;
+  this.id = `${year}${serial}`;
+});
 // Query Middleware
 studentSchema.pre("find", function (next) {
   this.find({ isDeleted: { $ne: true } });
@@ -62,7 +66,7 @@ studentSchema.pre("aggregate", function (next) {
   next();
 });
 
-studentSchema.statics.isUserExists = async function ({ email }) {
+studentSchema.statics.isStudentExists = async function ({ email }) {
   const existingUser = await Student.findOne({ email });
   return existingUser;
 };

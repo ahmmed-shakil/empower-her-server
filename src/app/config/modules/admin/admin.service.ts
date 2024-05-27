@@ -45,10 +45,23 @@ const deleteAdminFromDB = async (id: string) => {
   }
 };
 
+const loginAdmin = async (email: string, password: string) => {
+  const user = await Admin.findOne({ email });
+  if (!user) {
+    throw new Error("User doesn't exist");
+  }
+  const isAuthenticated = user.password === password;
+  if (!isAuthenticated) {
+    throw new Error("Invalid password");
+  }
+  user.password = "";
+  return user;
+};
 export const adminServices = {
   createAdminIntoDB,
   geTAdminFromDB,
   getSIngleAdminFromDB,
   updateAdmin,
   deleteAdminFromDB,
+  loginAdmin,
 };

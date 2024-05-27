@@ -9,7 +9,10 @@ export const createAdmin = async (
   try {
     const adminData = req.body;
     const newAdmin = await adminServices.createAdminIntoDB(adminData);
-    res.status(201).json(newAdmin);
+    console.log("🚀 ~ newAdmin:", newAdmin);
+    res
+      .status(201)
+      .json({ success: true, message: "Admin created", data: newAdmin });
   } catch (error) {
     next(error);
   }
@@ -70,10 +73,22 @@ export const deleteAdmin = async (
     next(error);
   }
 };
+const loginAdmin = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, password } = req.body;
+    const result = await adminServices.loginAdmin(email, password);
+    res
+      .status(200)
+      .json({ success: true, message: "Login successful", data: result });
+  } catch (error) {
+    next(error);
+  }
+};
 export const adminController = {
   createAdmin,
   getAdmin,
   getSingleAdmin,
   updateAdmin,
   deleteAdmin,
+  loginAdmin,
 };

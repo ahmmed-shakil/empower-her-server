@@ -12,10 +12,6 @@ const adminSchema = new Schema<TAdmin, AdminModel>(
       type: String,
       required: true,
     },
-    id: {
-      type: String,
-      required: true,
-    },
     firstName: {
       type: String,
       required: true,
@@ -43,7 +39,7 @@ const adminSchema = new Schema<TAdmin, AdminModel>(
 
 // virtual
 adminSchema.virtual("fullName").get(function () {
-  return this.firstName + this.lastName;
+  return this.firstName + " " + this.lastName;
 });
 
 // Query Middleware
