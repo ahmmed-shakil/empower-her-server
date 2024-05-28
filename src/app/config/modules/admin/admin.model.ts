@@ -41,6 +41,10 @@ const adminSchema = new Schema<TAdmin, AdminModel>(
 adminSchema.virtual("fullName").get(function () {
   return this.firstName + " " + this.lastName;
 });
+adminSchema.statics.isAdminExists = async function (email) {
+  const existingUser = await Admin.findOne({ email });
+  return existingUser;
+};
 
 // Query Middleware
 adminSchema.pre("find", function (next) {
@@ -48,19 +52,14 @@ adminSchema.pre("find", function (next) {
   next();
 });
 
-adminSchema.pre("findOne", function (next) {
+adminSchema.post("findOne", function (next) {
   this.find({ isDeleted: { $ne: true } });
-  next();
+  // next();
 });
 
 adminSchema.pre("aggregate", function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
 });
-
-adminSchema.statics.isAdminExists = async function ({ email }) {
-  const existingUser = await Admin.findOne({ email });
-  return existingUser;
-};
 
 export const Admin = model<TAdmin, AdminModel>("Admin", adminSchema);

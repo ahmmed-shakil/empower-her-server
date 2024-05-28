@@ -54,7 +54,7 @@ export const updateAdmin = async (
     const { id } = req.params;
     const adminData = req.body;
     const updatedAdmin = await adminServices.updateAdmin(id, adminData);
-    res.status(200).json(updatedAdmin);
+    res.status(200).json({ success: true, data: updateAdmin });
   } catch (error) {
     next(error);
   }
@@ -68,7 +68,10 @@ export const deleteAdmin = async (
   try {
     const { id } = req.params;
     await adminServices.deleteAdminFromDB(id);
-    res.status(204).send();
+    res.status(200).json({
+      success: true,
+      data: null,
+    });
   } catch (error) {
     next(error);
   }

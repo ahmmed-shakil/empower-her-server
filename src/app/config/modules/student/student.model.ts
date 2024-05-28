@@ -45,9 +45,17 @@ const studentSchema = new Schema<TStudent, StudentModel>(
 studentSchema.virtual("fullName").get(function () {
   return this.firstName + " " + this.lastName;
 });
+
+studentSchema.statics.isStudentExists = async function (email) {
+  console.log("🚀 ~ email:", email);
+  const existingUser = await Student.findOne({ email });
+  console.log("🚀 ~ existingUser:", existingUser);
+  return existingUser;
+};
+
 studentSchema.pre(`save`, async function (next) {
   const year = new Date().getFullYear();
-  const serial = (await Student.find())?.length;
+  const serial = (await Student.find())?.length + 1;
   this.id = `${year}${serial}`;
 });
 // Query Middleware
@@ -56,19 +64,14 @@ studentSchema.pre("find", function (next) {
   next();
 });
 
-studentSchema.pre("findOne", function (next) {
+studentSchema.post("findOne", function (next) {
   this.find({ isDeleted: { $ne: true } });
-  next();
+  // next();
 });
 
 studentSchema.pre("aggregate", function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
 });
-
-studentSchema.statics.isStudentExists = async function ({ email }) {
-  const existingUser = await Student.findOne({ email });
-  return existingUser;
-};
 
 export const Student = model<TStudent, StudentModel>("Student", studentSchema);

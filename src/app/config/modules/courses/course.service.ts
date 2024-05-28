@@ -8,10 +8,17 @@ const createCourse = async (courseData: TCourse) => {
 
 const getCourses = async () => {
   const result = await Course.find();
+  return result;
 };
 
 const getCourseById = async (id: string) => {
-  const result = await Course.findOne({ _id: id });
+  const result = await Course.findOne({ _id: id }).populate({
+    path: "modules",
+    populate: {
+      path: "lessons",
+    },
+  });
+  return result;
 };
 
 const updateCourse = async (id: string, courseData: TCourse) => {

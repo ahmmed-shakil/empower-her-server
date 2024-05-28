@@ -8,6 +8,7 @@ export const createStudent = async (
 ) => {
   try {
     const studentData = req.body;
+
     const newStudent = await StudentServices.createSTudentIntoDB(studentData);
     res.status(201).json({
       success: true,

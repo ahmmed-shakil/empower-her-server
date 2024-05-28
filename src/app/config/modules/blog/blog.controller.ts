@@ -15,7 +15,7 @@ const createBlog = async (req: Request, res: Response, next: NextFunction) => {
 
 const getBlogs = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await blogServices.getBlogs;
+    const result = await blogServices.getBlogs();
     res
       .status(200)
       .json({ success: true, message: "Blogs fetched", data: result });
@@ -40,7 +40,7 @@ const deleteBlog = async (req: Request, res: Response, next: NextFunction) => {
     const result = await blogServices.deleteBlog(id);
     res
       .status(200)
-      .json({ success: true, message: "Blogs deleted", data: result });
+      .json({ success: true, message: "Blogs deleted", data: null });
   } catch (error) {
     next(error);
   }

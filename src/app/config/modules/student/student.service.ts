@@ -3,6 +3,7 @@ import { Student } from "./student.model";
 
 const createSTudentIntoDB = async (studentData: TStudent) => {
   if (await Student.isStudentExists(studentData.email)) {
+    console.log("Here");
     throw new Error("Email already exists");
   }
   const response = await Student.create(studentData);
@@ -24,7 +25,10 @@ const getSIngleStudentFromDB = async (id: string) => {
 
 const updateStudent = async (id: string, studentData: TStudent) => {
   if (await Student.isStudentExists(studentData.email)) {
-    throw new Error("This email already exists");
+    const existingUser = await Student.findOne({ email: studentData.email });
+    if (existingUser?.email !== studentData.email) {
+      throw new Error("This email already exists");
+    }
   }
   const result = await Student.findOneAndUpdate({ _id: id }, studentData, {
     new: true,

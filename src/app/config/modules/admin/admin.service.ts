@@ -24,7 +24,10 @@ const getSIngleAdminFromDB = async (id: string) => {
 
 const updateAdmin = async (id: string, adminData: TAdmin) => {
   if (await Admin.isAdminExists(adminData.email)) {
-    throw new Error("This email already exists");
+    const existingUser = await Admin.findOne({ email: adminData.email });
+    if (existingUser?.email !== adminData.email) {
+      throw new Error("This email already exists");
+    }
   }
   const result = await Admin.findOneAndUpdate({ _id: id }, adminData, {
     new: true,

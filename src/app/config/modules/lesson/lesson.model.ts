@@ -4,11 +4,11 @@ import { TLesson } from "./lesson.interface";
 const lessonSchema = new Schema<TLesson>({
   title: {
     type: String,
-    required: true,
+    default: "NA",
   },
   url: {
     type: String,
-    required: true,
+    default: "NA",
   },
   moduleId: {
     type: Schema.Types.ObjectId,

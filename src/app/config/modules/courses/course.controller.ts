@@ -11,15 +11,17 @@ const createCourse = async (
 ) => {
   try {
     const { courseData, modules } = req.body;
+    console.log("🚀 ~ modules:", modules);
 
     const courseResult = await courseServices.createCourse(courseData);
     if (courseResult) {
       for (const moduleData of modules) {
-        const { moduleInfo, lessons } = moduleData;
+        const { title, lessons } = moduleData;
 
         const moduleResult = await moduleServices.createModule({
-          ...moduleInfo,
+          title,
           courseId: courseResult._id,
+          isDeleted: false,
         });
 
         if (moduleResult) {
@@ -38,4 +40,36 @@ const createCourse = async (
   } catch (error) {
     next(error);
   }
+};
+
+const getCourses = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await courseServices.getCourses();
+    res.status(200).json(result);
+  } catch (error) {
+    console.log("🚀 ~ error:", error);
+    next(error);
+  }
+};
+const deleteCourse = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const result = await courseServices.deleteCourse(id);
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const courseControllers = {
+  createCourse,
+  getCourses,
+  deleteCourse,
 };

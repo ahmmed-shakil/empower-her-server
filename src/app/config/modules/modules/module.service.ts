@@ -2,6 +2,7 @@ import { TModule } from "./modules.interface";
 import { Module } from "./module.model";
 
 const createModule = async (moduleData: TModule) => {
+  console.log("🚀 ~ createModule ~ moduleData:", moduleData);
   const result = await Module.create(moduleData);
   return result;
 };

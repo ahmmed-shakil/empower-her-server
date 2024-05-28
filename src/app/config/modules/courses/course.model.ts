@@ -18,8 +18,18 @@ const courseSchema = new Schema<TCourse>(
   },
   {
     timestamps: true,
+    toJSON: {
+      virtuals: true,
+    },
   }
 );
+
+// Virtual for modules in Course schema
+courseSchema.virtual("modules", {
+  ref: "Module",
+  localField: "_id",
+  foreignField: "courseId",
+});
 
 // Query Middleware
 courseSchema.pre("find", function (next) {

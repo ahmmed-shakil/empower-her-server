@@ -5,7 +5,7 @@ const moduleSchema = new Schema<TModule>(
   {
     title: {
       type: String,
-      required: true,
+      default: "NA",
     },
     courseId: {
       type: Schema.Types.ObjectId,
@@ -16,9 +16,14 @@ const moduleSchema = new Schema<TModule>(
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true } }
 );
-
+// Virtual for lessons in Module schema
+moduleSchema.virtual("lessons", {
+  ref: "Lesson",
+  localField: "_id",
+  foreignField: "moduleId",
+});
 // Query Middleware
 moduleSchema.pre("find", function (next) {
   this.find({ isDeleted: { $ne: true } });
